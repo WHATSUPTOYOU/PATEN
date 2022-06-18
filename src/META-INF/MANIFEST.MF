@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Main-Class: test.runExp
+Class-Path: java-diff-utils-4.5.jar getMethods.jar org.eclipse.osgi-3.17
+ .0.jar org.eclipse.text-3.12.0.jar org.eclipse.jdt.core-3.27.0.jar org.
+ eclipse.core.jobs-3.12.0.jar org.eclipse.equinox.app-1.6.0.jar org.ecli
+ pse.core.runtime-3.23.0.jar org.eclipse.equinox.common-3.15.0.jar org.e
+ clipse.core.commands-3.10.100.jar org.eclipse.core.contenttype-3.8.0.ja
+ r org.eclipse.core.expressions-3.8.0.jar org.eclipse.core.filesystem-1.
+ 9.100.jar org.eclipse.core.resources-3.15.100.jar org.eclipse.equinox.r
+ egistry-3.11.0.jar org.eclipse.equinox.preferences-3.9.0.jar gumtree.ja
+ r org.eclipse.jgit-5.12.0.202106070339-r.jar antlr-4.9-complete.jar mys
+ ql-connector-java-5.1.39-bin.jar
+

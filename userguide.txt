@@ -1,0 +1,75 @@
+这是本项目的说明文档，本项目可以编译后运行，也可通过源码直接调用，在开始运行之前，确保数据库已经构建完成且已经进行正确配置，配置修改在./src/Configure目录下，其中共有三个数据库表vul_apis(存储漏洞的基本信息以及漏洞文件、已修复文件位置等)、fileast（存放文件的AST树）、changelist（存放漏洞修复改变的AST子树位置，改变是增删还是删除以及改变是结点还是子树），RuntimeConfig是运行时临时文件存放的位置以及目标文件的位置。
+
+输入输出：
+
+主要分为两个部分：输入jar包进行可疑方法定位部分，以及方法特征匹配的阶段。主类为./src/test/runExp.java，main方法中实现了定位，如果存在可疑方法则跳转到匹配阶段。
+
+定位阶段：
+
+初始输入为jar包的位置，依次进行解压缩，通过反射获取所有class文件的方法全名，去数据库中查找是否可能存在相应的漏洞条目，如果存在，则反编译并提取相应的方法（默认保存在./runtimeFile/tfile.java中），进入后续匹配阶段，否则继续下一个方法。
+
+匹配阶段：
+
+此阶段主要实现代码匹配部分，这里的运行输入依次分别为：文件名、commitid、方法的全名（如SingleJwt.java 13d880 cn.fxbin.bubble.plugin.token.SingleJwt.parseToken）。输出为：匹配结果，保存在输入提供的存放结果的文件中，以json格式进行保存。主要结果项目包括：Cost——运行时间消耗；Analysis Res——分析结果，true表示包含漏洞，false表示不包含漏洞，nochange表示漏洞修复对该方法无有效修改，Unknown(No target Method)表示目标文件中方法与要对比的方法不一致，NormalizedDistance is XXX 表示无法确定时，目标文件和漏洞文件中上下文部分的相似情况，越小表示越相似，可作为辅助判断；VT Edit distance——表示漏洞特征和目标特征的距离（0-1）；PT Edit distance——表示修复特征和目标特征的距离（0-1）。
+
+匹配阶段的输入文件也可以通过其他预处理的方式获取，运行结束后如果不存在res.json或没有内容，代表未发现漏洞方法。
+
+src目录：
+
+src目录下的包依次为：Configure存放运行配置；DataConstructure可以根据vul_apis表生成fileast表和changelist表；DataStructure是数据库的数据集合类；Gumtree利用Gumtree工具做主要的特征匹配；main实现控制台运行（未完成）；Preprocess实现其他处理；test下面只有一个运行主类；TokenAnalysis实现漏洞修复中对token的分析。
+
+主要方法部分在Gumtree/function目录下实现，其中main目录下GraphBasedMain.run_gumtree_ana是这个方法部分的入口,slicing相关类实现获取切片信息，similaritycalc包存放计算相似度相关类。
+
+数据库表结构如下：
+vul_apis
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| snyk_id          | varchar(300) | YES  |     | NULL    |       |
+| cve_no           | varchar(300) | YES  |     | NULL    |       |
+| group_id         | varchar(300) | YES  |     | NULL    |       |
+| artifact_id      | varchar(300) | NO   | PRI | NULL    |       |
+| affected_version | varchar(600) | YES  |     | NULL    |       |
+| git_repo         | varchar(600) | YES  |     | NULL    |       |
+| commitid         | varchar(300) | YES  |     | NULL    |       |
+| filename         | varchar(300) | YES  |     | NULL    |       |
+| file_longname    | varchar(600) | NO   | PRI | NULL    |       |
+| methodname       | varchar(300) | YES  |     | NULL    |       |
+| method_longname  | varchar(300) | NO   | PRI | NULL    |       |
+| classname        | varchar(300) | YES  |     | NULL    |       |
+| params           | varchar(600) | NO   | PRI | NULL    |       |
+| del_lines        | varchar(600) | NO   | PRI | 0       |       |
+| add_lines        | varchar(600) | NO   | PRI | 0       |       |
+| MD5              | varchar(300) | YES  |     | NULL    |       |
+| vfile            | longtext     | YES  |     | NULL    |       |
+| pfile            | longtext     | YES  |     | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+
+如需要扩展漏洞库，需要先自行收集vul_apis信息，本项目可生成相应的抽象语法树数据库fileast表和changelist表，结构如下：
+
+fileast
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| filename        | varchar(100) | NO   | PRI | NULL    |       |
+| commitid        | varchar(100) | NO   | PRI | NULL    |       |
+| vfile           | longtext     | YES  |     | NULL    |       |
+| pfile           | longtext     | YES  |     | NULL    |       |
+| vastxml         | longtext     | YES  |     | NULL    |       |
+| pastxml         | longtext     | YES  |     | NULL    |       |
+| method_longname | varchar(300) | NO   | PRI | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+
+changelist
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| filename        | varchar(100) | NO   | PRI | NULL    |       |
+| commitid        | varchar(100) | NO   | PRI | NULL    |       |
+| type            | varchar(10)  | NO   | PRI | NULL    |       |
+| Optype          | varchar(20)  | NO   | PRI | NULL    |       |
+| subtreeSeq      | varchar(300) | NO   | PRI | NULL    |       |
+| method_longname | varchar(300) | NO   | PRI | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+
+
