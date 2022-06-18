@@ -1,0 +1,23 @@
+{"TotalCost":"875","Analysis Res":"NormalizedDistance is 0.42857142857142855","tfile":"/home/usr1/Experiment_tools/JarTestData/dataSetFinalSimplify/SNYK-JAVA-ORGAPACHESTRUTS-30782/influenced_package/76eb8f/RestActionMapper.java/struts2-rest-plugin-2.3.20.3.jar/tfile.java","IOCost":"63","method_longname":"org.apache.struts2.rest.RestActionMapper.handleDynamicMethodInvocation","Step":"3","Tokens":"-mapping-actionMethod"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"tfile":"RestActionMapper.java","Analysis Res":"Error"}
+{"TotalCost":"1053","Analysis Res":"true","tfile":"RestActionMapper.java","IOCost":"320","method_longname":"org.apache.struts2.rest.RestActionMapper.handleDynamicMethodInvocation","Step":"2"}
+{"TotalCost":"1126","Analysis Res":"true","tfile":"RestActionMapper.java","IOCost":"319","PT Edit distance":"0.6","method_longname":"org.apache.struts2.rest.RestActionMapper.handleDynamicMethodInvocation","Step":"2"}
+{"TotalCost":"91656","Analysis Res":"true","tfile":"RestActionMapper.java","IOCost":"359","PT Edit distance":"0.6","method_longname":"org.apache.struts2.rest.RestActionMapper.handleDynamicMethodInvocation","Step":"2"}
+{"TotalCost":"927","Analysis Res":"false","tfile":"SingleJwt.java","VT Edit distance":"1.0","IOCost":"301","PT Edit distance":"0.3333333333333333","method_longname":"cn.fxbin.bubble.plugin.token.SingleJwt.parseToken","Step":"2"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"TotalCost":"920","Analysis Res":"false","tfile":"SingleJwt.java","VT Edit distance":"1.0","IOCost":"298","PT Edit distance":"0.3333333333333333","method_longname":"cn.fxbin.bubble.plugin.token.SingleJwt.parseToken","Step":"2"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"tfile":"SingleJwt.java","Analysis Res":"Error"}
+{"TotalCost":"923","Analysis Res":"false","tfile":"SingleJwt.java","VT Edit distance":"1.0","IOCost":"278","PT Edit distance":"0.3333333333333333","method_longname":"cn.fxbin.bubble.plugin.token.SingleJwt.parseToken","Step":"2"}
