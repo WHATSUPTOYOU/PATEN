@@ -10,14 +10,13 @@ import com.github.javaparser.Providers;
 
 import java.io.File;
 //import java.util.ArrayList;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import org.objectweb.asm.*;
+import org.springframework.asm.Opcodes;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,6 +60,7 @@ public class runExp extends ClassLoader{
     }
 
     static void runMatch(String filename, String commitid, String method_longname) throws IOException { // Match Phase
+        new File(RuntimeConfig.resDir).delete(); // remove prior res.json
         List<String> methodList = new ArrayList<>();
         methodList.add(method_longname.split("\\.")[method_longname.split("\\.").length-1]);
         removeMethod.doDelete(RuntimeConfig.runtimeTfile, methodList);
@@ -108,19 +108,71 @@ public class runExp extends ClassLoader{
         ArrayList<File> filelist = new ArrayList<>();
         getFileAll(new File(RuntimeConfig.runtimeProj), filelist); //  get all .class file
         for(File f: filelist){  // travel class files, get all method signature
-            Method[] ms;
-            Class c;
+            List<String> methods = new ArrayList<>();
             try {   //  注：有些获取不到，这部分方法可能有问题
-                classLoad clsld = new classLoad();
-                c = clsld.loadCls(f);
-                ms = c.getMethods();
+                ClassReader clr = new ClassReader(new FileInputStream(f));
+                final String classname = clr.getClassName().replace("/",".").replace("$",".");
+                clr.accept(new ClassVisitor() {
+
+                    @Override
+                    public void visit(int i, int i1, String s, String s1, String s2, String[] strings) {
+                        return;
+                    }
+
+                    @Override
+                    public void visitSource(String s, String s1) {
+                        return;
+                    }
+
+                    @Override
+                    public void visitOuterClass(String s, String s1, String s2) {
+                        return;
+                    }
+
+                    @Override
+                    public AnnotationVisitor visitAnnotation(String s, boolean b) {
+                        return null;
+                    }
+
+                    @Override
+                    public void visitAttribute(Attribute attribute) {
+                        return;
+                    }
+
+                    @Override
+                    public void visitInnerClass(String s, String s1, String s2, int i) {
+                        return;
+                    }
+
+                    @Override
+                    public FieldVisitor visitField(int i, String s, String s1, String s2, Object o) {
+                        return null;
+                    }
+
+                    @Override
+                    public MethodVisitor visitMethod(int i, String s, String s1, String s2, String[] strings) {
+                        if(s.equals("<clinit>")) return null;
+                        if(s.equals("<init>")){
+                            s = classname.split("\\.")[classname.split("\\.").length - 1];
+                        }
+                        methods.add(classname + "." + s);
+                        return null;
+                    }
+
+                    @Override
+                    public void visitEnd() {
+                        return;
+                    }
+                },ClassReader.SKIP_DEBUG);
+//                System.out.println(methods);
+//                classLoad clsld = new classLoad();
+//                c = clsld.loadCls(f);
+//                ms = c.getMethods();
             }
             catch (Error e){
                 continue;
             }
-            for(Method m :ms){  // for each method in class file
-                String method_longname = c.getName() + "." + m.getName();
-//                Parameter[] params = m.getParameters();
+            for(String method_longname :methods){  // for each method in class file
                 List<String[]> itemlist = searchDatabase(method_longname); //  search suspect items which might match
                 if(itemlist == null) continue;
                 else{  // if has correspond items in database
@@ -136,8 +188,9 @@ public class runExp extends ClassLoader{
     private static void delete_tempFile(){
         new File(RuntimeConfig.runtimeVfile).delete();
         new File(RuntimeConfig.runtimePfile).delete();
+        new File(RuntimeConfig.runtimeTfile).delete();
         new File(RuntimeConfig.runtimeProj).delete();
-        new File(RuntimeConfig.resDir).delete();
+//        new File(RuntimeConfig.resDir).delete();
 //        new File(RuntimeFiles.runtimeTfile).delete();
     }
 }

@@ -80,13 +80,6 @@ public class removeMethod {
                 int end  = unit.getLineNumber(node.getStartPosition()+node.getLength());
                 int a[] = new int[2];
 
-//                System.out.print(name.toString()+": ");
-//                for(int i=0;i<node.parameters().size();i++){
-//                    System.out.print(node.parameters().get(i).toString()+" ");
-//                }
-//                System.out.println();
-
-//                if(!method_is_equal(name.toString(),node.parameters())){
                 if(!MethodList.contains(name.toString())){
                     a[0] = start;
                     a[1] = end;
@@ -124,13 +117,7 @@ public class removeMethod {
                 int end  = unit.getLineNumber(node.getStartPosition()+node.getLength());
                 int a[] = new int[2];
 
-//                System.out.print(name.toString()+": ");
-//                for(int i=0;i<node.parameters().size();i++){
-//                    System.out.print(node.parameters().get(i).toString()+" ");
-//                }
-//                System.out.println();
 
-//                if(!method_is_equal(name.toString(),node.parameters())){
                 if(!Method.equals(name.toString())){
                     a[0] = start;
                     a[1] = end;
@@ -216,7 +203,7 @@ public class removeMethod {
             br = new BufferedReader(new FileReader(file));
             while (br.ready()) {
                 String line = br.readLine();
-//                System.out.println(line);
+
                 line_number++;
                 if(line_number == 2200){
                     int a = 1;
@@ -264,7 +251,6 @@ public class removeMethod {
             br = new BufferedReader(new FileReader(file));
             while (br.ready()) {
                 String line = br.readLine();
-//                System.out.println(line);
                 line_number++;
                 if(line_number == 2200){
                     int a = 1;
